@@ -31,50 +31,68 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.watchApiServiceRequest = void 0;
 var effects_1 = require("redux-saga/effects");
 var apiService_slice_1 = require("../slices/apiService.slice"); // Import your actions
-var axios_service_1 = require("../services/axios.service");
-function fetchApiData(_a) {
-    var url = _a.url, _b = _a.method, method = _b === void 0 ? 'GET' : _b, queryParams = _a.queryParams, body = _a.body, Headers = _a.Headers;
-    var axiosService = new axios_service_1.default('https://jsonplaceholder.typicode.com');
-    var headers = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-    };
-    if (Headers) {
-        Object.assign(headers, Headers);
-    }
-    switch (method) {
-        case 'GET':
-            return axiosService.get(url, { params: queryParams, headers: headers });
-        case 'POST':
-            return axiosService.post(url, body, { headers: headers });
-        case 'PUT':
-            return axiosService.put(url, body, { headers: headers });
-        case 'DELETE':
-            return axiosService.delete(url, { headers: headers });
-        default:
-            return axiosService.get(url, { params: queryParams, headers: headers });
-    }
-}
+var __1 = require("../");
 function fetchApiDataSaga(action) {
-    var data, error_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, url, method, queryParams, body, headers, apiService, data, _b, error_1;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _a.trys.push([0, 3, , 5]);
-                return [4 /*yield*/, (0, effects_1.call)(fetchApiData, action.payload)];
-            case 1:
-                data = _a.sent();
-                return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceSuccess)(data))];
+                _c.trys.push([0, 17, , 19]);
+                _a = action.payload, url = _a.url, method = _a.method, queryParams = _a.queryParams, body = _a.body, headers = _a.headers;
+                apiService = (0, __1.getApiService)();
+                data = void 0;
+                console.log("Api Service:", { get: apiService.axiosInstance.get });
+                _b = method;
+                switch (_b) {
+                    case 'GET': return [3 /*break*/, 1];
+                    case 'POST': return [3 /*break*/, 4];
+                    case 'PUT': return [3 /*break*/, 7];
+                    case 'DELETE': return [3 /*break*/, 10];
+                }
+                return [3 /*break*/, 13];
+            case 1: return [4 /*yield*/, (0, effects_1.call)(apiService.axiosInstance.get, url, { params: queryParams, headers: headers })];
             case 2:
-                _a.sent();
-                return [3 /*break*/, 5];
+                data = _c.sent();
+                return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceSuccess)(data))];
             case 3:
-                error_1 = _a.sent();
+                _c.sent();
+                return [3 /*break*/, 16];
+            case 4: return [4 /*yield*/, (0, effects_1.call)(apiService.axiosInstance.post, url, body, { params: queryParams, headers: headers })];
+            case 5:
+                data = _c.sent();
+                return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceSuccess)(data))];
+            case 6:
+                _c.sent();
+                return [3 /*break*/, 16];
+            case 7: return [4 /*yield*/, (0, effects_1.call)(apiService.axiosInstance.put, url, body, { params: queryParams, headers: headers })];
+            case 8:
+                data = _c.sent();
+                return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceSuccess)(data))];
+            case 9:
+                _c.sent();
+                return [3 /*break*/, 16];
+            case 10: return [4 /*yield*/, (0, effects_1.call)(apiService.axiosInstance.delete, url, { params: queryParams, headers: headers })];
+            case 11:
+                data = _c.sent();
+                return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceSuccess)(data))];
+            case 12:
+                _c.sent();
+                return [3 /*break*/, 16];
+            case 13: return [4 /*yield*/, (0, effects_1.call)(apiService.axiosInstance.get, url, { params: queryParams, headers: headers })];
+            case 14:
+                data = _c.sent();
+                return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceSuccess)(data))];
+            case 15:
+                _c.sent();
+                return [3 /*break*/, 16];
+            case 16: return [3 /*break*/, 19];
+            case 17:
+                error_1 = _c.sent();
                 return [4 /*yield*/, (0, effects_1.put)((0, apiService_slice_1.apiServiceFailure)(error_1))];
-            case 4:
-                _a.sent();
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+            case 18:
+                _c.sent();
+                return [3 /*break*/, 19];
+            case 19: return [2 /*return*/];
         }
     });
 }

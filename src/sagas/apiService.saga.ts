@@ -3,50 +3,36 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 import { apiServiceRequest, apiServiceSuccess, apiServiceFailure } from '../slices/apiService.slice'; // Import your actions
 import { PayloadAction } from '@reduxjs/toolkit';
-import AxiosService from '../services/axios.service';
-
-export interface FetchPayload {
-  url: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  queryParams?: any;
-  body?: any;
-  Headers?: any;
-}
-
-function fetchApiData({
-  url,
-  method = 'GET',
-  queryParams,
-  body,
-  Headers,
-}: FetchPayload) {
-  const axiosService = new AxiosService('https://jsonplaceholder.typicode.com');
-  const headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  };
-  if (Headers) {
-    Object.assign(headers, Headers);
-  }
-
-  switch (method) {
-    case 'GET':
-      return axiosService.get(url, { params: queryParams, headers });
-    case 'POST':
-      return axiosService.post(url, body, { headers });
-    case 'PUT':
-      return axiosService.put(url, body, { headers });
-    case 'DELETE':
-      return axiosService.delete(url, { headers });
-    default:
-      return axiosService.get(url, { params: queryParams, headers });
-  }
-}
+import { FetchPayload, getApiService } from '../';
 
 function* fetchApiDataSaga(action: PayloadAction<FetchPayload>): Generator<any, void, any> {
   try {
-    const data: any = yield call(fetchApiData, action.payload);
-    yield put(apiServiceSuccess(data));
+    const { url, method, queryParams, body, headers } = action.payload;
+    const apiService = getApiService();
+    let data: any;
+
+    switch (method) {
+      case 'GET':
+        data = yield call(apiService.axiosInstance.get, url, { params: queryParams, headers });
+        yield put(apiServiceSuccess(data))
+        break;
+      case 'POST':
+        data = yield call(apiService.axiosInstance.post, url, body, { params: queryParams, headers });
+        yield put(apiServiceSuccess(data))
+        break;
+      case 'PUT':
+        data = yield call(apiService.axiosInstance.put, url, body, { params: queryParams, headers });
+        yield put(apiServiceSuccess(data))
+        break;
+      case 'DELETE':
+        data = yield call(apiService.axiosInstance.delete, url, { params: queryParams, headers });
+        yield put(apiServiceSuccess(data))
+        break;
+      default:
+        data = yield call(apiService.axiosInstance.get, url, { params: queryParams, headers });
+        yield put(apiServiceSuccess(data))
+        break;
+    }
   } catch (error: any) {
     yield put(apiServiceFailure(error));
   }
